@@ -1,0 +1,28 @@
+{
+  // 禁用 VSCode 自带的 TypeScript 格式化工具，统一交给 Prettier 处理
+  "js/ts.format.enabled": false,
+  // 设置默认格式化程序为 Prettier
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  // 开启保存文件时自动格式化
+  "editor.formatOnSave": true,
+  // 开启保存文件时自动执行 ESLint 修复（如：自动清除未引用的导入、格式纠错）
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "always",
+    "source.organizeImports": "never"
+  },
+  // 针对 TypeScript 文件单独应用规范
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true
+  },
+  "[prisma]": {
+    "editor.defaultFormatter": "Prisma.prisma"
+  },
+  // 避免自动修复冲突或格式化 JSON/YAML 等非代码文件
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[jsonc]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  }
+}
