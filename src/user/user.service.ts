@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PrismaService } from '../prisma/prisma.service';
+import { UserResponseDto } from './dto/user-response.dto';
 
 @Injectable()
 export class UserService {
@@ -13,6 +14,19 @@ export class UserService {
         phone: phone,
       },
     });
+  }
+
+  async getUserInfo(userId: string | number) {
+    const user = await this.prisma.user.findFirst({
+      include: {
+        role: { select: { roleName: true } },
+      },
+      where: {
+        id: Number(userId),
+      },
+    });
+
+    return user ? new UserResponseDto(user) : null;
   }
 
   create(createUserDto: CreateUserDto) {

@@ -4,7 +4,7 @@ import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 
 export interface TokenPayloadInfo {
-  userId: string;
+  userId: string | number;
   username: string;
   roleId: bigint;
 }
