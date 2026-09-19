@@ -13,6 +13,13 @@ async function bootstrap() {
   // 设置统一前缀，/api
   app.setGlobalPrefix('api');
 
+  app.useGlobalPipes(
+    new ValidationPipe({
+      transform: true, // 核心配置：开启自动类型转换（把 string 自动转成 DTO 声明的类型）
+      whitelist: true, // 建议顺便开启：自动过滤掉 DTO 中未声明的非安全属性
+    }),
+  );
+
   await app.listen(process.env.PORT ?? 3000);
 
   console.log('process.env.NODE_ENV==', process.env.NODE_ENV);

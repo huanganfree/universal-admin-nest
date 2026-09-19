@@ -5,9 +5,7 @@ import { PrismaMariaDb } from '@prisma/adapter-mariadb';
 @Injectable()
 export class PrismaService extends PrismaClient implements OnModuleInit, OnModuleDestroy {
   constructor() {
-    // 1. 创建数据库连接池
-    // const pool = mysql.createPool(process.env['DATABASE_URL'] || '');
-    // 2. 初始化适配器
+    //  创建数据库连接池
     const adapter = new PrismaMariaDb({
       host: process.env.DB_HOST,
       port: process.env.DB_PORT,
@@ -17,7 +15,7 @@ export class PrismaService extends PrismaClient implements OnModuleInit, OnModul
       connectionLimit: 20,
       connectTimeout: 10000,
     });
-    // 3. 将 adapter 传给 PrismaClient 构造函数
+    // 将 adapter 传给 PrismaClient 构造函数
     super({ adapter });
   }
   async onModuleInit() {

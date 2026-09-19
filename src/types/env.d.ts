@@ -8,6 +8,7 @@ declare global {
       DB_USER: string;
       DB_PASSWORD: string;
       DB_NAME: string;
+      JWT_ACCESS_SECRET: string;
 
       // JWT 或其他业务配置（可根据需要自行扩展）
       JWT_SECRET?: string;

@@ -21,7 +21,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
       if (typeof res === 'object' && res !== null) {
         const resObj = res as Record<string, any>;
         // 如果传了自定义 code 就用自定义的（如 2002），没有就用 HTTP 状态码（如 400, 404）
-        code = resObj['code'] ?? code;
+        code = resObj['code'] || resObj['statusCode'] || code;
 
         // 兼容 class-validator 的数组报错和普通 msg
         const rawMsg = resObj['msg'] ?? resObj['message'];

@@ -9,131 +9,144 @@ datasource db {
 }
 
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
-model content {
-  id                            BigInt         @id @default(autoincrement())
-  title                         String         @db.VarChar(255)
-  tags                          Json
-  cover                         Json?
-  content                       String         @db.LongText
-  created_by                    Int
-  updated_by                    Int
-  created_at                    DateTime?      @db.DateTime(0)
-  updated_at                    DateTime?      @db.DateTime(0)
-  status                        content_status @default(draft)
-  deleted_at                    DateTime?      @db.DateTime(0)
-  review_remark                 String?        @db.VarChar(255)
-  user_content_created_byTouser user           @relation("content_created_byTouser", fields: [created_by], references: [id], onDelete: NoAction, map: "content_ibfk_1")
-  user_content_updated_byTouser user           @relation("content_updated_byTouser", fields: [updated_by], references: [id], onDelete: NoAction, map: "content_ibfk_2")
+model Content {
+  id                         BigInt        @id @default(autoincrement())
+  title                      String        @db.VarChar(255)
+  tags                       Json
+  cover                      Json?
+  content                    String        @db.LongText
+  createdBy                  Int           @map("created_by")
+  updatedBy                  Int           @map("updated_by")
+  createdAt                  DateTime?     @map("created_at") @db.DateTime(0)
+  updatedAt                  DateTime?     @map("updated_at") @db.DateTime(0)
+  status                     ContentStatus @default(draft)
+  deletedAt                  DateTime?     @map("deleted_at") @db.DateTime(0)
+  reviewRemark               String?       @map("review_remark") @db.VarChar(255)
+  userContentCreatedByTouser User          @relation("content_created_byTouser", fields: [createdBy], references: [id], onDelete: NoAction, map: "content_ibfk_1")
+  userContentUpdatedByTouser User          @relation("content_updated_byTouser", fields: [updatedBy], references: [id], onDelete: NoAction, map: "content_ibfk_2")
 
-  @@index([created_by], map: "created_by")
-  @@index([updated_by], map: "updated_by")
+  @@index([createdBy], map: "created_by")
+  @@index([updatedBy], map: "updated_by")
+  @@map("content")
 }
 
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
-model menu {
-  id         BigInt      @id @default(autoincrement())
-  parent_id  BigInt      @default(0)
-  name       String      @db.VarChar(255)
-  type       menu_type
-  icon       String?     @db.VarChar(255)
-  path       String?     @db.VarChar(255)
-  component  String?     @db.VarChar(255)
-  permission String?     @db.VarChar(255)
+model Menu {
+  id         BigInt     @id @default(autoincrement())
+  parentId   BigInt     @default(0) @map("parent_id")
+  name       String     @db.VarChar(255)
+  type       MenuType
+  icon       String?    @db.VarChar(255)
+  path       String?    @db.VarChar(255)
+  component  String?    @db.VarChar(255)
+  permission String?    @db.VarChar(255)
   sort       BigInt
-  created_at DateTime?   @db.DateTime(0)
-  updated_at DateTime?   @db.DateTime(0)
-  deleted_at DateTime?   @db.DateTime(0)
-  status     Int?        @default(0) @db.TinyInt
-  role_menu  role_menu[]
+  createdAt  DateTime?  @map("created_at") @db.DateTime(0)
+  updatedAt  DateTime?  @map("updated_at") @db.DateTime(0)
+  deletedAt  DateTime?  @map("deleted_at") @db.DateTime(0)
+  status     Int?       @default(0) @db.TinyInt
+  roleMenu   RoleMenu[]
 
-  @@unique([parent_id, name], map: "uk_parent_name")
+  @@unique([parentId, name], map: "uk_parent_name")
+  @@map("menu")
 }
 
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
-model role {
-  id          BigInt      @id @default(autoincrement())
-  roleName    String      @unique(map: "uk_roleName") @db.VarChar(255)
-  roleCode    String      @unique(map: "uk_roleCode") @db.VarChar(255)
-  description String?     @db.VarChar(255)
-  status      Int?        @default(0) @db.TinyInt
-  createdAt   DateTime?   @db.DateTime(0)
-  updatedAt   DateTime?   @db.DateTime(0)
+model Role {
+  id          BigInt     @id @default(autoincrement())
+  roleName    String     @unique(map: "uk_roleName") @db.VarChar(255)
+  roleCode    String     @unique(map: "uk_roleCode") @db.VarChar(255)
+  description String?    @db.VarChar(255)
+  status      Int?       @default(0) @db.TinyInt
+  createdAt   DateTime?  @db.DateTime(0)
+  updatedAt   DateTime?  @db.DateTime(0)
   createdBy   BigInt?
   updatedBy   BigInt?
-  deletedAt   DateTime?   @db.DateTime(0)
-  role_menu   role_menu[]
-  user        user[]
+  deletedAt   DateTime?  @db.DateTime(0)
+  roleMenu    RoleMenu[]
+  user        User[]
+
+  @@map("role")
 }
 
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
-model role_menu {
-  id         BigInt    @id @default(autoincrement())
-  role_id    BigInt
-  menu_id    BigInt
-  created_at DateTime? @db.DateTime(0)
-  updated_at DateTime? @db.DateTime(0)
-  role       role      @relation(fields: [role_id], references: [id], onDelete: Cascade, map: "role_menu_ibfk_5")
-  menu       menu      @relation(fields: [menu_id], references: [id], onDelete: Cascade, map: "role_menu_ibfk_6")
+model RoleMenu {
+  id        BigInt    @id @default(autoincrement())
+  roleId    BigInt    @map("role_id")
+  menuId    BigInt    @map("menu_id")
+  createdAt DateTime? @map("created_at") @db.DateTime(0)
+  updatedAt DateTime? @map("updated_at") @db.DateTime(0)
+  role      Role      @relation(fields: [roleId], references: [id], onDelete: Cascade, map: "role_menu_ibfk_5")
+  menu      Menu      @relation(fields: [menuId], references: [id], onDelete: Cascade, map: "role_menu_ibfk_6")
 
-  @@unique([role_id, menu_id], map: "role_menu_menuId_roleId_unique")
-  @@unique([role_id, menu_id], map: "uk_role_menu")
-  @@index([menu_id], map: "menu_id")
+  @@unique([roleId, menuId], map: "role_menu_menuId_roleId_unique")
+  @@unique([roleId, menuId], map: "uk_role_menu")
+  @@index([menuId], map: "menu_id")
+  @@map("role_menu")
 }
 
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
-model sys_dict {
+model SysDict {
   id          BigInt    @id @default(autoincrement())
-  dict_name   String    @db.VarChar(255)
-  dict_code   String    @unique(map: "dict_code") @db.VarChar(255)
-  description String?   @db.VarChar(255)
-  createdAt   DateTime  @db.DateTime(0)
-  updatedAt   DateTime  @db.DateTime(0)
-  deletedAt   DateTime? @db.DateTime(0)
-}
-
-/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
-model sys_dict_item {
-  id          BigInt    @id @default(autoincrement())
-  item_text   String    @db.VarChar(255)
-  item_value  String    @db.VarChar(255)
-  dict_code   String    @db.VarChar(255)
+  dictName    String    @map("dict_name") @db.VarChar(255)
+  dictCode    String    @unique(map: "dict_code") @map("dict_code") @db.VarChar(255)
   description String?   @db.VarChar(255)
   createdAt   DateTime  @db.DateTime(0)
   updatedAt   DateTime  @db.DateTime(0)
   deletedAt   DateTime? @db.DateTime(0)
 
-  @@unique([item_value, dict_code], map: "dict_code_item_value")
+  @@map("sys_dict")
 }
 
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
-model user {
-  id                               Int       @id @default(autoincrement())
-  username                         String    @unique(map: "uk_username") @db.VarChar(255)
-  password                         String    @default("123456") @db.VarChar(255)
-  nickname                         String    @db.VarChar(255)
-  lastLoginTime                    DateTime? @db.DateTime(0)
-  createdAt                        DateTime? @db.DateTime(0)
-  updatedAt                        DateTime? @db.DateTime(0)
-  deletedAt                        DateTime? @db.DateTime(0)
-  status                           Int       @default(0) @db.TinyInt
-  roleId                           BigInt
-  phone                            String    @unique(map: "phone") @db.VarChar(255)
-  avatar                           String    @db.VarChar(500)
-  content_content_created_byTouser content[] @relation("content_created_byTouser")
-  content_content_updated_byTouser content[] @relation("content_updated_byTouser")
-  role                             role      @relation(fields: [roleId], references: [id], onDelete: NoAction, map: "user_ibfk_1")
+model SysDictItem {
+  id          BigInt    @id @default(autoincrement())
+  itemText    String    @map("item_text") @db.VarChar(255)
+  itemValue   String    @map("item_value") @db.VarChar(255)
+  dictCode    String    @map("dict_code") @db.VarChar(255)
+  description String?   @db.VarChar(255)
+  createdAt   DateTime  @db.DateTime(0)
+  updatedAt   DateTime  @db.DateTime(0)
+  deletedAt   DateTime? @db.DateTime(0)
+
+  @@unique([itemValue, dictCode], map: "dict_code_item_value")
+  @@map("sys_dict_item")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model User {
+  id                            Int       @id @default(autoincrement())
+  username                      String    @unique(map: "uk_username") @db.VarChar(255)
+  password                      String    @default("123456") @db.VarChar(255)
+  nickname                      String    @db.VarChar(255)
+  lastLoginTime                 DateTime? @db.DateTime(0)
+  createdAt                     DateTime? @db.DateTime(0)
+  updatedAt                     DateTime? @db.DateTime(0)
+  deletedAt                     DateTime? @db.DateTime(0)
+  status                        Int       @default(0) @db.TinyInt
+  roleId                        BigInt
+  phone                         String    @unique(map: "phone") @db.VarChar(255)
+  avatar                        String    @db.VarChar(500)
+  contentContentCreatedByTouser Content[] @relation("content_created_byTouser")
+  contentContentUpdatedByTouser Content[] @relation("content_updated_byTouser")
+  role                          Role      @relation(fields: [roleId], references: [id], onDelete: NoAction, map: "user_ibfk_1")
 
   @@index([roleId], map: "roleId")
+  @@map("user")
 }
 
-enum menu_type {
-  TYPE_1 @map("1")
-  TYPE_2 @map("2")
-}
-
-enum content_status {
+enum ContentStatus {
   draft
   pending
   published
   offline
+
+  @@map("content_status")
+}
+
+enum MenuType {
+  type_1 @map("1")
+  type_2 @map("2")
+
+  @@map("menu_type")
 }

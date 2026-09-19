@@ -1,7 +1,7 @@
 import { HttpException } from '@nestjs/common';
 
 export interface BusinessExceptionParams {
-  msg: string;
+  msg?: string;
   code?: number;
   httpStatus?: number;
 }
@@ -9,6 +9,8 @@ export interface BusinessExceptionParams {
 export class BusinessException extends HttpException {
   constructor({ msg, code = 500, httpStatus = 200 }: BusinessExceptionParams) {
     // 关键点：把 { code, msg, data: null } 传给super
+    console.log(1212);
+
     super({ code, msg, data: null }, httpStatus);
   }
 }
